@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+    title: Brainstorm AI Chatbot API
+    version: 1.0.0
+    description: API documentation for the Brainstorm AI Chatbot application
+
+paths:
+    /api/v1/ai/chat:
+        post:
+            summary: Send a message to the chatbot
+            description: Allows the user to send messages to the chatbot and receive responses, with the option to extract and format ideas if present in the AI's response.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                messages:
+                                    type: array
+                                    description: Array of messages to send to the AI
+                                    items:
+                                        type: object
+                                        properties:
+                                            role:
+                                                type: string
+                                                description: The role of the sender, either "user" or "assistant"
+                                                enum: [user, assistant]
+                                                example: user
+                                            content:
+                                                type: array
+                                                description: The content of the message
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        type:
+                                                            type: string
+                                                            description: The type of content
+                                                            example: text
+                                                        text:
+                                                            type: string
+                                                            description: The actual message text
+                                                            example: "What's a good lunch idea?"
+            responses:
+                "200":
+                    description: Successful response from the AI
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    response:
+                                        type: string
+                                        description: The AI's reply, potentially including formatted ideas
+                                        example: "Here are some ideas..."
+                                    ideas:
+                                        type: array
+                                        description: List of ideas extracted from the response, if available
+                                        items:
+                                            type: string
+                                        example:
+                                            - "Quinoa Salad Bowl"
+                                            - "Grilled Chicken Wrap"
+                                            - "Lentil Soup"
+                "400":
+                    description: Bad Request - Invalid input
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        description: Error message explaining why the request was invalid
+                                        example: "Messages are required."
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        description: Error message describing the issue
+                                        example: "Failed to get a response from AI."
